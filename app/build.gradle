@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+//打包日期
+def releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+8"))
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVer
     buildToolsVersion rootProject.ext.buildToolsVer
@@ -8,9 +13,10 @@ android {
         applicationId "com.coolapk.developer_verify_package"
         minSdkVersion rootProject.ext.minSdkVer
         targetSdkVersion rootProject.ext.targetSdkVer
-        versionCode 1
-        versionName "1.0"
+        versionCode 100
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        flavorDimensions "default"
     }
 
     signingConfigs {
@@ -45,6 +51,19 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    //添加渠道配置
+    productFlavors {
+        yiqiyou {}
+    }
+    productFlavors.all {
+        flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "17game_${variant.productFlavors[0].name}_v${variant.versionName}.apk"
+        }
     }
 }
 
